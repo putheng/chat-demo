@@ -8,9 +8,7 @@
                 placeholder="Type your message here..."
                 v-model="newMessage"
                 @keyup.enter="sendMessage"
-                
-                @keydown="sendTypingEvent"
-                 />
+                @keydown="sendTypingEvent"/>
 
         <span class="input-group-btn">
             <button class="btn btn-primary btn-sm" id="btn-chat" @click="sendMessage">
@@ -44,18 +42,13 @@
 
                 this.newMessage = ''
             },
-
-            sendStopTypingEvent(){
-                console.log('stop')
-            }
         },
 
-
-        created() {
-            setInterval(() => {
-                Echo.join('chat')
+         watch: {
+            newMessage: _.debounce(function() {
+              Echo.join('chat')
                     .whisper('stopTyping', this.user);
-            }, 5000);
-        },
+            }, 3000)
+          }
     }
 </script>

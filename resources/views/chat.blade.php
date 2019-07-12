@@ -4,7 +4,7 @@
 
     <div class="container chats">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-sm-9">
                 <div class="card card-default">
                     <div class="card-header">Chats</div>
 
@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-3">
                 <ul class="list-group">
                     <li class="list-group-item" v-for="user in users">
                         @{{ user.name }} <span v-if="user.typing" class="badge badge-primary">typing...</span>
