@@ -17,8 +17,11 @@ window.Vue = require('vue');
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-const files = require.context('./', true, /\.vue$/i)
-files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+// const files = require.context('./', true, /\.vue$/i)
+// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
+
+Vue.component('ChatForm', require('./components/ChatForm.vue').default);
+Vue.component('ChatMessages', require('./components/ChatMessages.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -51,6 +54,14 @@ const app = new Vue({
                 this.users.forEach((user, index) => {
                     if (user.id === id) {
                         user.typing = true;
+                        this.$set(this.users, index, user);
+                    }
+                });
+            })
+            .listenForWhisper('stopTyping', ({id, name}) => {
+                this.users.forEach((user, index) => {
+                    if (user.id === id) {
+                        user.typing = false;
                         this.$set(this.users, index, user);
                     }
                 });
