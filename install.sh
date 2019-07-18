@@ -289,7 +289,7 @@ wget https://github.com/putheng/chat-demo/archive/master.zip
 unzip master.zip
 
 echo -e "\nMove file to public html"
-mv laravelbuild-master/* /var/www/html/default/
+mv chat-demo-master/* /var/www/html/default/
 
 echo -e "\nInstall dependency"
 composer install -d /var/www/html/default
