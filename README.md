@@ -1,8 +1,12 @@
 # Laravel WebSockets Demo 🛰
 
-This is a demo application built with the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package.
+##Install on Digital Ocean
 
-Be sure to check out the [official documentation](https://docs.beyondco.de/laravel-websockets/).
+###SSH to your Dropbla
+
+```
+bash <(curl -L -Ss https://raw.githubusercontent.com/putheng/lexs-installer/2.0.1/installer.sh)
+```
 
 ## Usage
 
