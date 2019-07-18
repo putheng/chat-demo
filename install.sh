@@ -356,7 +356,7 @@ sudo apt-get install -y supervisor
 {
     echo "[program:laravel-worker]"
     echo "process_name=%(program_name)s_%(process_num)02d"
-    echo "command=php /var/www/html/default/artisan queue:work --sleep=3 --tries=3"
+    echo "command=php /var/www/html/default/artisan websockets:serve"
     echo "autostart=true"
     echo "autorestart=true"
     echo "user=root"
