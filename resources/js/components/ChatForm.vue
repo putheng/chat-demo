@@ -36,8 +36,9 @@
 
             sendMessage() {
                 this.$emit('messagesent', {
-                    user: this.user,
-                    message: this.newMessage
+                    username: this.user.name,
+                    message: this.newMessage,
+                    isme: true,
                 });
 
                 this.newMessage = ''
@@ -48,7 +49,7 @@
             newMessage: _.debounce(function() {
               Echo.join('chat')
                     .whisper('stopTyping', this.user);
-            }, 3000)
+            }, 2000)
           }
     }
 </script>

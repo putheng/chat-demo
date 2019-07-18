@@ -1,10 +1,10 @@
 <template>
     <ul class="chat">
-        <li class="left clearfix" v-for="message in messages">
+        <li class="left clearfix" v-for="(message, key) in messages" :key="key" :class="{'outbound': message.isme}">
             <div class="chat-body clearfix">
                 <div class="header">
                     <strong class="primary-font">
-                        {{ message.user.name }}
+                        {{ message.username }}
                     </strong>
                 </div>
                 <p>

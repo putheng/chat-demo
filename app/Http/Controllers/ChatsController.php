@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Http\Resources\MessageResource;
 use App\Message;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,7 @@ class ChatsController extends Controller
 
     public function fetchMessages()
     {
-        return Message::with('user')->get();
+        return MessageResource::collection(Message::get());
     }
 
     public function sendMessage(Request $request)

@@ -67,9 +67,10 @@ const app = new Vue({
                 });
             })
             .listen('MessageSent', (event) => {
+
                 this.messages.push({
                     message: event.message.message,
-                    user: event.user
+                    username: event.message.username
                 });
 
                 this.users.forEach((user, index) => {
@@ -84,15 +85,16 @@ const app = new Vue({
     methods: {
         fetchMessages() {
             axios.get('/messages').then(response => {
-                this.messages = response.data;
+                this.messages = response.data.data;
             });
         },
 
         addMessage(message) {
+            console.log(message)
             this.messages.push(message);
 
             axios.post('/messages', message).then(response => {
-                console.log(response.data);
+                
             });
         }
     }
