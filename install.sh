@@ -351,6 +351,7 @@ php /var/www/html/default/artisan migrate
 php /var/www/html/default/artisan db:seed
 
 # Install Supervisor
+echo -e "\nInstall Supervisor"
 sudo apt-get install -y supervisor
 
 {
@@ -365,10 +366,12 @@ sudo apt-get install -y supervisor
     echo "stdout_logfile=/var/www/html/default/worker.log"
 } >> /etc/supervisor/conf.d/laravel-worker.conf
 
+echo -e "\nGive execute permission to config file"
 # give execute permission to config file
 sudo chmod +x /etc/supervisor/conf.d/laravel-worker.conf
 
 # Reading for any new configurations
+echo -e "\nReading for any new configurations"
 sudo supervisorctl reread
 
 # Now supervisor know that there is new file 
@@ -376,6 +379,7 @@ sudo supervisorctl reread
 sudo supervisorctl update
 
 # Reload
+echo -e "\nReload Supervisor"
 sudo supervisorctl reload
 
 echo -e "MySQL Root Password      : $mysqlrootpassword"
