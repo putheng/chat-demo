@@ -5,7 +5,7 @@
 ###SSH to your Dropbla
 
 ```
-bash <(curl -L -Ss https://raw.githubusercontent.com/putheng/lexs-installer/2.0.1/installer.sh)
+bash <(curl -L -Ss https://raw.githubusercontent.com/putheng/chat-demo/master/install.sh)
 ```
 
 ## Usage
