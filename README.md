@@ -1,8 +1,8 @@
 # Laravel WebSockets Demo 🛰
 
-##Install on Digital Ocean
+## Install on Digital Ocean
 
-###SSH to your Dropbla
+### SSH to your Dropbla
 
 ```
 bash <(curl -L -Ss https://raw.githubusercontent.com/putheng/chat-demo/master/install.sh)
