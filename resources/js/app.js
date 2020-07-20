@@ -90,7 +90,6 @@ const app = new Vue({
         },
 
         addMessage(message) {
-            console.log(message)
             this.messages.push(message);
 
             axios.post('/messages', message).then(response => {

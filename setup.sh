@@ -1,45 +1,8 @@
-#!/usr/bin/env bash
-
-# Add the PHP 7 Repositories
-sudo add-apt-repository ppa:ondrej/php
-
-#If you’re missing add-apt-repository, like some plain systems are, 
-echo -e "\ninstall it and then add-apt-repository ppa:ondrej/php"
-sudo apt-get -y install software-properties-common
-sudo apt-get -y install python-software-properties
-
-# Update
-sudo apt-get update
-
-echo -e "\nInstall Git"
-sudo apt-get install -y git
-
-# Create
-sudo useradd -m -d /home/git git
-
-# Authorized keys file, and it resides in the dot folder "ssh".
-mkdir -p /home/git/.ssh && touch /home/git/.ssh/authorized_keys
-
-echo -e "\nInstall Nginx"
-sudo apt-get -y install unzip zip nginx
-
 echo -e "\nInstall PHP 7.2 FPM"
 sudo apt-get -y install php7.2 php7.2-fpm php7.2-mysql php7.2-mbstring php7.2-xml php7.2-curl
 
-echo -e "\nInstall PHP 7.1 FPM"
-sudo apt-get -y install php7.1 php7.1-cli php7.1-common php7.1-json php7.1-opcache php7.1-mysql php7.1-mbstring php7.1-mcrypt php7.1-zip php7.1-fpm
-
-echo -e "\nInstall PHP 7.0 FPM"
-sudo apt-get -y install php7.0 php7.0-fpm php7.0-mysql php7.0-mbstring php7.0-xml php7.0-curl
-
-echo -e "\nInstall PHP 5.5 FPM"
-sudo apt-get -y install php5.6 php5.6-fpm
-
 echo -e "\nRestart PHP"
 sudo service php7.2-fpm restart
-sudo service php7.1-fpm restart
-sudo service php7.0-fpm restart
-sudo service php5.6-fpm restart
 
 passwordgen() {
     l=$1
@@ -109,19 +72,15 @@ cat <<EOF > /etc/mysql/mysql.conf.d/mysqld.cnf
 #
 # For explanations see
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
-
 # This will be passed to all mysql clients
 # It has been reported that passwords should be enclosed with ticks/quotes
 # escpecially if they contain "#" chars...
 # Remember to edit /etc/mysql/debian.cnf when changing the socket location.
-
 # Here is entries for some specific programs
 # The following values assume you have at least 32M ram
-
 [mysqld_safe]
 socket      = /var/run/mysqld/mysqld.sock
 nice        = 0
-
 [mysqld]
 #
 # * Basic Settings
@@ -203,25 +162,7 @@ max_binlog_size   = 100M
 EOF
 
 echo -e "\nInstall Composer"
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-
-echo -e "\nSetup HHVM"
-sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 B4112585D386EB94
-
-echo -e "\nHHVM's repository"
-sudo add-apt-repository "deb http://dl.hhvm.com/ubuntu $(lsb_release -sc) main"
-
-echo -e "\nUpdate"
-sudo apt-get update
-
-echo -e "\nInstall HHVM"
-sudo apt-get -y install hhvm
-
-echo -e "\n Run script which makes the integration with Nginx"
-sudo /usr/share/hhvm/install_fastcgi.sh
-
-echo -e "\nConfig Nginx to know HHVM"
-#Change on Nginx sites enabled ==> fastcgi_pass   127.0.0.1:9000;
+# curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
 echo -e "\nRemove default Nginx host"
 rm -f /etc/nginx/sites-enabled/default
@@ -237,20 +178,15 @@ cat <<EOF > /etc/nginx/sites-available/default
 server {
 	listen 80;
     listen 443 ssl http2;
-
 	root /var/www/html/default/public;
 	index index.php index.html;
-
-	server_name laravelspace.com;
-
+	server_name lixr.me;
     location / {
         try_files \$uri \$uri/ /index.php?\$query_string;
     }
-
     charset utf-8;
     sendfile off;
     client_max_body_size 100m;
-
 	location ~* \.php\$ {
 		# With php-fpm unix sockets
 		fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
@@ -258,7 +194,6 @@ server {
 		include			fastcgi_params;
 		fastcgi_param   SCRIPT_FILENAME    \$document_root\$fastcgi_script_name;
 		fastcgi_param   SCRIPT_NAME        \$fastcgi_script_name;
-
         fastcgi_intercept_errors off;
         fastcgi_buffer_size 16k;
         fastcgi_buffers 4 16k;
@@ -266,11 +201,9 @@ server {
         fastcgi_send_timeout 300;
         fastcgi_read_timeout 300;
 	}
-
     location ~ /\.ht {
         deny all;
     }
-
 }
 EOF
 
@@ -281,120 +214,3 @@ sudo service nginx restart
 
 # Install Wget
 sudo apt-get install -y wget
-
-echo -e "\nDownload file system"
-wget https://github.com/putheng/chat-demo/archive/master.zip
-
-# Unzip 
-unzip master.zip
-
-echo -e "\nMove file to public html"
-mv chat-demo-master/* /var/www/html/default/
-
-echo -e "\nInstall dependency"
-composer install -d /var/www/html/default
-
-sudo chmod -R ug+rwx /var/www/html/subdomain/bootstrap/cache
-sudo chmod -R ug+rwx /var/www/html/subdomain/storage 
-
-# Other way
-sudo chown -R $USER:www-data /var/www/html/subdomain/storage
-sudo chown -R $USER:www-data /var/www/html/subdomain/bootstrap/cache
-
-chmod -R 775 /var/www/html/subdomain/storage
-chmod -R 775 /var/www/html/subdomain/bootstrap/cache
-
-{
-    echo "APP_NAME=LaravelSpace"
-    echo "APP_ENV=production"
-    echo "APP_KEY="
-    echo "APP_DEBUG=true"
-    echo "APP_URL=http://laravelspace.com"
-    echo "APP_BUILD_URL=laravelspace.com"
-    echo ""
-    echo "LOG_CHANNEL=stack"
-    echo ""
-    echo "DB_CONNECTION=mysql"
-    echo "DB_HOST=127.0.0.1"
-    echo "DB_PORT=3306"
-    echo "DB_DATABASE=$mysqldatabase"
-    echo "DB_USERNAME=$mysqlusername"
-    echo "DB_PASSWORD=$mysqlpassword"
-    echo "DB_ROOT=$mysqlrootpassword"
-    echo ""
-    echo "BROADCAST_DRIVER=log"
-    echo "CACHE_DRIVER=file"
-    echo "SESSION_DRIVER=file"
-    echo "SESSION_LIFETIME=120"
-    echo "QUEUE_DRIVER=database"
-    echo ""
-    echo "REDIS_HOST=127.0.0.1"
-    echo "REDIS_PASSWORD=null"
-    echo "REDIS_PORT=6379"
-    echo ""
-    echo "MAIL_DRIVER=smtp"
-    echo "MAIL_HOST=smtp.mailtrap.io"
-    echo "MAIL_PORT=2525"
-    echo "MAIL_USERNAME=null"
-    echo "MAIL_PASSWORD=null"
-    echo "MAIL_ENCRYPTION=null"
-    echo ""
-    echo "PUSHER_APP_ID="
-    echo "PUSHER_APP_KEY="
-    echo "PUSHER_APP_SECRET="
-    echo "PUSHER_APP_CLUSTER=mt1"
-    echo ""
-} >> /var/www/html/default/.env
-
-php /var/www/html/default/artisan key:generate
-php /var/www/html/default/artisan migrate
-php /var/www/html/default/artisan db:seed
-
-# Install Supervisor
-echo -e "\nInstall Supervisor"
-sudo apt-get install -y supervisor
-
-{
-    echo "[program:laravel-worker]"
-    echo "process_name=%(program_name)s_%(process_num)02d"
-    echo "command=php /var/www/html/subdomain/artisan websockets:serve"
-    echo "autostart=true"
-    echo "autorestart=true"
-    echo "user=root"
-    echo "numprocs=8"
-    echo "redirect_stderr=true"
-    echo "stdout_logfile=/var/www/html/default/worker.log"
-} >> /etc/supervisor/conf.d/laravel-worker.conf
-
-echo -e "\nGive execute permission to config file"
-# give execute permission to config file
-sudo chmod +x /etc/supervisor/conf.d/laravel-worker.conf
-
-# Reading for any new configurations
-echo -e "\nReading for any new configurations"
-sudo supervisorctl reread
-
-# Now supervisor know that there is new file 
-# but we have to restart this supervisor service also.
-sudo supervisorctl update
-
-# Reload
-echo -e "\nReload Supervisor"
-sudo supervisorctl reload
-
-echo -e "MySQL Root Password      : $mysqlrootpassword"
-echo -e ""
-echo -e "MySQL System username   : $mysqlusername"
-echo -e "MySQL System Password   : $mysqlpassword"
-echo -e "MySQL System database : $mysqldatabase"
-echo -e ""
-echo -e "(theses passwords are saved in /root/passwords.txt)"
-
-while true; do
-    read -e -p "Restart your server now to complete the install (y/n)? " rsn
-    case $rsn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;
-    esac
-done
-shutdown -r now
